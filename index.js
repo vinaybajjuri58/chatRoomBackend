@@ -19,6 +19,7 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 app.use("/api/rooms", roomRouter);
+const PORT = process.env.PORT || 3000;
 
 // Socket Handlers
 io.on("connection", (socket) => {
@@ -32,6 +33,6 @@ io.on("connection", (socket) => {
 app.use(pathNotFound);
 app.use(errorHandler);
 initialiseDBConnection();
-server.listen(5000, () => {
+server.listen(PORT, () => {
   console.log("Socket server started");
 });
