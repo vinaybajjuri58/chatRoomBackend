@@ -16,7 +16,10 @@ const io = socketio(server, {
   },
 });
 app.get("/", (req, res) => {
-  res.send("Hello World");
+  res.status(200).json({
+    success: "true",
+    message: "Welcome to backend of chat room",
+  });
 });
 app.use("/api/rooms", roomRouter);
 const PORT = process.env.PORT || 3000;
