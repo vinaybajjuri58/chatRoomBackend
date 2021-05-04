@@ -1,0 +1,37 @@
+const express = require("express");
+const cors = require("cors");
+const { createServer } = require("http");
+const socketio = require("socket.io");
+require("dotenv").config();
+const { roomRouter } = require("./routes/room.routes");
+const { pathNotFound, errorHandler } = require("./middleware/errorHandlers");
+const { initialiseDBConnection } = require("./db/db.connect");
+const app = express();
+app.use(cors());
+app.use(express.json());
+const server = createServer(app);
+const io = socketio(server, {
+  cors: {
+    origin: "*",
+  },
+});
+app.get("/", (req, res) => {
+  res.send("Hello World");
+});
+app.use("/api/rooms", roomRouter);
+
+// Socket Handlers
+io.on("connection", (socket) => {
+  console.log("New client connected");
+  socket.on("join", (data, callback) => {
+    console.log(`Data from client ${data}`);
+    callback();
+  });
+});
+
+app.use(pathNotFound);
+app.use(errorHandler);
+initialiseDBConnection();
+server.listen(5000, () => {
+  console.log("Socket server started");
+});
